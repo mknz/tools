@@ -24,7 +24,7 @@ def main():
         "-l",
         "--language",
         default=None,
-        help="Language code for transcription (default: None [autodetet])",
+        help="Language code for transcription (default: None [autodetect])",
     )
     parser.add_argument(
         "-m",
