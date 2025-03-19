@@ -15,8 +15,7 @@ WORDS_CUTOFF = 200
 
 
 def process(text: str, model_id: str) -> str:
-    """Dummy function to process text."""
-    # Initialize LLM related objects
+    """Process input text with LLM."""
     prompt_text = f'以下のテキストを日本語に翻訳してください。「だ・である」調を用いること。改行等を適切に補うようにし、Markdown形式で出力すること。原文の意味を保ちつつ自然な日本語に翻訳し、また訳抜けがないように留意してください。文中に出てくる数字については半角で統一してください。説明なしで結果のみを出力すること。\n---\n{text}'
     model = llm.get_model(model_id)
     return model.prompt(prompt_text).text()
