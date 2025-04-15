@@ -5,8 +5,19 @@
 # ]
 # ///
 import argparse
+from datetime import timedelta
 
-from faster_whisper import WhisperModel
+from faster_whisper import WhisperModel, BatchedInferencePipeline
+
+
+def format_timestamp(seconds):
+    td = timedelta(seconds=seconds)
+    total_seconds = int(td.total_seconds())
+    millis = int((td.total_seconds() - total_seconds) * 1000)
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+    return f"{hours:02}:{minutes:02}:{seconds:02},{millis:03}"
 
 
 def main():
@@ -39,17 +50,23 @@ def main():
 
     # Initialize the Whisper model with user-provided arguments
     model = WhisperModel(args.model_size, compute_type="int8")
+    batched_model = BatchedInferencePipeline(model=model)
 
     # Transcribe the audio file
-    segments, _ = model.transcribe(
+    segments, _ = batched_model.transcribe(
         args.audio_file,
         args.language,
         "transcribe",
+        batch_size=16,
     )
 
-    # Extract and print the transcribed text
-    result = " ".join(segment.text for segment in segments)
-    print(result)
+    # Output in srt format
+    for i, segment in enumerate(segments, start=1):
+        start_time = format_timestamp(segment.start)
+        end_time = format_timestamp(segment.end)
+        print(f"{i}")
+        print(f"{start_time} --> {end_time}")
+        print(f"{segment.text.strip()}\n")
 
 
 if __name__ == "__main__":
