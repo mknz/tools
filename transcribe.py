@@ -55,6 +55,10 @@ def main():
         "--multilingual",
         action='store_true',
     )
+    parser.add_argument(
+        "--initial_prompt",
+        default='',
+    )
 
     # Parse arguments
     args = parser.parse_args()
@@ -71,6 +75,7 @@ def main():
             "transcribe",
             batch_size=args.batch,
             multilingual=args.multilingual,
+            initial_prompt=args.initial_prompt,
         )
     else:
         model_ = model
@@ -79,6 +84,7 @@ def main():
             args.language,
             "transcribe",
             multilingual=args.multilingual,
+            initial_prompt=args.initial_prompt,
         )
 
     # Output in srt format
