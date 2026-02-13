@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.14"
 # dependencies = [
 #     "faster-whisper",
 # ]
@@ -60,11 +60,12 @@ def main():
     model = WhisperModel(args.model_size, compute_type="int8")
 
     # Transcribe the audio file
-    model_ = model
-    segments, _ = model_.transcribe(
+    segments, _ = model.transcribe(
         args.audio_file,
         args.language,
         "transcribe",
+        vad_filter=True,
+        vad_parameters={"min_silence_duration_ms": 1000},
         multilingual=args.multilingual,
         initial_prompt=args.initial_prompt,
     )
