@@ -45,13 +45,6 @@ def main():
         help="Model size to use (default: large)",
     )
     parser.add_argument(
-        "-b",
-        "--batch",
-        type=int,
-        default=0,
-        help="Batch size",
-    )
-    parser.add_argument(
         "--multilingual",
         action='store_true',
     )
@@ -67,25 +60,14 @@ def main():
     model = WhisperModel(args.model_size, compute_type="int8")
 
     # Transcribe the audio file
-    if args.batch > 0:
-        model_ = BatchedInferencePipeline(model=model)
-        segments, _ = model_.transcribe(
-            args.audio_file,
-            args.language,
-            "transcribe",
-            batch_size=args.batch,
-            multilingual=args.multilingual,
-            initial_prompt=args.initial_prompt,
-        )
-    else:
-        model_ = model
-        segments, _ = model_.transcribe(
-            args.audio_file,
-            args.language,
-            "transcribe",
-            multilingual=args.multilingual,
-            initial_prompt=args.initial_prompt,
-        )
+    model_ = model
+    segments, _ = model_.transcribe(
+        args.audio_file,
+        args.language,
+        "transcribe",
+        multilingual=args.multilingual,
+        initial_prompt=args.initial_prompt,
+    )
 
     # Output in srt format
     for i, segment in enumerate(segments, start=1):
